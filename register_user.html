@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah User Baru</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-container"> <h2>Tambah User Baru</h2>
+        <form id="registerUserForm">
+            <div class="input-group">
+                <label for="newUsername">Username:</label>
+                <input type="text" id="newUsername" name="newUsername" required>
+            </div>
+            <div class="input-group">
+                <label for="newPassword">Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <span class="toggle-password" onclick="togglePasswordVisibilityRegister()">👁️</span>
+            </div>
+            <div class="input-group checkbox-group">
+                <input type="checkbox" id="showPasswordRegister" onchange="togglePasswordVisibilityRegister()">
+                <label for="showPasswordRegister">Lihat Password</label>
+            </div>
+            <div class="input-group">
+                <label for="userRole">Peran (Role):</label>
+                <select id="userRole" name="userRole" required>
+                    <option value="">Pilih Peran</option>
+                    <option value="skpd">User SKPD</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="input-group" id="skpdSelectGroup" style="display: none;">
+                <label for="skpdName">Pilih SKPD:</label>
+                <select id="skpdName" name="skpdName">
+                    <option value="">Pilih SKPD</option>
+                    </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Daftarkan User</button>
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Kembali</button>
+            <p id="registerMessage" class="info-message"></p>
+        </form>
+    </div>
+
+    <script src="js/main.js"></script> <script>
+        // Daftar lengkap SKPD (sama seperti di admin.js)
+        const daftarSkpdRegister = [
+            "Dinas Pendidikan dan Kebudayaan", "Dinas Kesehatan", "RSUD Kabelota Donggala",
+            "Kecamatan Banawa", "Kecamatan Rio Pakava", "Dinas Komunikasi dan Informatika",
+            "Kecamatan Sojol Utara", "Dinas Tanaman Pangan, Holtikultura dan Perkebunan",
+            "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia", "Dinas Ketahanan Pangan",
+            "Satuan Polisi Pamong Praja", "Kecamatan Banawa Tengah", "Sekretariat DPRD",
+            "Dinas Pekerjaan Umum dan Penataan Ruang", "Kecamatan Tanantovea",
+            "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
+            "Badan Penanggulangan Bencana Daerah", "Badan Perencanaan Pembangunan Daerah",
+            "Sekretariat Daerah", "Kecamatan Sirenja", "Dinas Kependudukan dan Catatan Sipil",
+            "Dinas Lingkungan Hidup Daerah", "Dinas Perpustakaan", "Kecamatan Labuan",
+            "Badan Pendapatan Daerah", "Inspektorat", "Kecamatan Pinembani",
+            "Dinas Pemuda dan Olahraga", "Dinas Peternakan dan Kesehatan Hewan",
+            "Kecamatan Sindue Tobata", "Badan Kesatuan Bangsa dan Politik",
+            "Kecamatan Balaesang Tanjung", "Kecamatan Banawa Selatan", "Dinas Koperasi dan UMKM",
+            "Kecamatan Sindue Tombusabora", "Dinas Pemberdayaan Perempuan dan Perlindungan Anak",
+            "Dinas Sosial", "Kecamatan Balaesang", "Dinas Tenaga Kerja dan Transmigrasi",
+            "Badan Pengelolaan Keuangan dan Aset Daerah", "Kecamatan Dampelas",
+            "Dinas Pengendalian Penduduk dan Keluarga Berencana",
+            "Dinas Perumahan, Kawasan Pemukiman dan Pertanahan", "Kecamatan Sojol",
+            "Dinas Perindustrian dan Perdagangan", "Dinas Perhubungan", "Dinas Pariwisata",
+            "Dinas Pemberdayaan Masyarakat dan Desa", "Dinas Kearsipan",
+            "Badan Penelitian dan Pengembangan", "Dinas Perikanan", "Kecamatan Sindue",
+            "RSUD Pendau Tambu"
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'admin') {
+                alert('Anda tidak memiliki akses untuk mendaftar user baru.');
+                window.location.href = 'index.html'; // Redirect jika bukan admin
+                return;
+            }
+
+            const userRoleSelect = document.getElementById('userRole');
+            const skpdSelectGroup = document.getElementById('skpdSelectGroup');
+            const skpdNameSelect = document.getElementById('skpdName');
+            const registerForm = document.getElementById('registerUserForm');
+            const registerMessage = document.getElementById('registerMessage');
+
+            // Populate SKPD dropdown
+            daftarSkpdRegister.sort().forEach(skpd => { // Urutkan secara alfabetis
+                const option = document.createElement('option');
+                option.value = skpd;
+                option.textContent = skpd;
+                skpdNameSelect.appendChild(option);
+            });
+
+            // Show/hide SKPD dropdown based on role selection
+            userRoleSelect.addEventListener('change', function() {
+                if (this.value === 'skpd') {
+                    skpdSelectGroup.style.display = 'block';
+                    skpdNameSelect.setAttribute('required', 'required');
+                } else {
+                    skpdSelectGroup.style.display = 'none';
+                    skpdNameSelect.removeAttribute('required');
+                }
+            });
+
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const newUsername = document.getElementById('newUsername').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const userRole = document.getElementById('userRole').value;
+                const skpdName = document.getElementById('skpdName').value;
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+
+                // Cek jika username sudah ada
+                if (users.some(user => user.username === newUsername)) {
+                    registerMessage.textContent = 'Username sudah ada. Pilih username lain.';
+                    registerMessage.style.color = 'red';
+                    return;
+                }
+
+                const newUser = {
+                    username: newUsername,
+                    password: newPassword,
+                    role: userRole
+                };
+
+                if (userRole === 'skpd') {
+                    if (!skpdName) {
+                        registerMessage.textContent = 'Pilih SKPD untuk user SKPD.';
+                        registerMessage.style.color = 'red';
+                        return;
+                    }
+                    newUser.skpdName = skpdName;
+                }
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users)); // Update local storage
+
+                registerMessage.textContent = 'User berhasil didaftarkan!';
+                registerMessage.style.color = 'green';
+                registerForm.reset();
+                skpdSelectGroup.style.display = 'none'; // Sembunyikan lagi setelah reset
+                skpdNameSelect.removeAttribute('required');
+
+                // Opsional: Redirect kembali ke manajemen user setelah berhasil
+                // setTimeout(() => {
+                //     window.location.href = 'admin_dashboard.html#user-management';
+                // }, 1500);
+            });
+        });
+
+        function togglePasswordVisibilityRegister() {
+            const passwordField = document.getElementById('newPassword');
+            const showPasswordCheckbox = document.getElementById('showPasswordRegister');
+            const toggleIcon = document.querySelector('.toggle-password');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                showPasswordCheckbox.checked = true;
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordField.type = 'password';
+                showPasswordCheckbox.checked = false;
+                toggleIcon.textContent = '👁️';
+            }
+        }
+    </script>
+</body>
+</html>

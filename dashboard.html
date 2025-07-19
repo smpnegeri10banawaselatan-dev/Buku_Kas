@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Buku Kas Bendahara SKPD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Buku Kas Bendahara <span id="skpdNameDisplay"></span></h1>
+            <div class="header-actions">
+                <button id="btnLogout" class="btn btn-danger">Logout</button>
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" class="active" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#" data-section="input-saldo-awal">Input Saldo Awal</a></li>
+                <li><a href="#" data-section="input-transaksi">Input Transaksi</a></li>
+                <li><a href="#" data-section="laporan">Laporan</a></li>
+                <li id="skpdUnitMenu" style="display: none;">
+                    <a href="#">Unit SKPD</a>
+                    <ul id="skpdUnitList" class="submenu">
+                        </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="dashboard-section" class="active-section">
+                <h2>Ringkasan Saldo</h2>
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Saldo Awal</h3>
+                        <p id="saldoAwalDisplay" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Pendapatan</h3>
+                        <p id="totalPendapatanDisplay" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Pengeluaran</h3>
+                        <p id="totalPengeluaranDisplay" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card current-balance">
+                        <h3>Sisa Saldo</h3>
+                        <p id="sisaSaldoDisplay" class="saldo">Rp 0,00</p>
+                    </div>
+                </div>
+
+                <div class="transaction-summary">
+                    <h3>Transaksi Terbaru</h3>
+                    <table id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>No. Jurnal</th>
+                                <th>Tanggal</th>
+                                <th>Uraian</th>
+                                <th>Jenis</th>
+                                <th>Nominal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="input-saldo-awal-section" class="hidden-section">
+                <h2>Input Saldo Awal</h2>
+                <form id="formInputSaldoAwal">
+                    <div class="input-group">
+                        <label for="saldoAwalValue">Nilai Saldo Awal:</label>
+                        <input type="text" id="saldoAwalValue" name="saldoAwalValue" placeholder="Contoh: 1.250.000,00" required onkeyup="formatRupiah(this)">
+                    </div>
+                    <div class="input-group">
+                        <label for="saldoAwalTanggal">Tanggal Saldo Awal:</label>
+                        <input type="date" id="saldoAwalTanggal" name="saldoAwalTanggal" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Saldo Awal</button>
+                    <p id="saldoAwalMessage" class="info-message"></p>
+                </form>
+            </section>
+
+            <section id="input-transaksi-section" class="hidden-section">
+                <h2>Input Transaksi</h2>
+                <form id="formInputTransaksi">
+                    <div class="input-group">
+                        <label for="tanggalTransaksi">Tanggal:</label>
+                        <input type="date" id="tanggalTransaksi" name="tanggalTransaksi" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="jenisTransaksi">Jenis Transaksi:</label>
+                        <select id="jenisTransaksi" name="jenisTransaksi" required>
+                            <option value="">Pilih Jenis</option>
+                            <option value="pendapatan">Pendapatan</option>
+                            <option value="pengeluaran">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="nominalTransaksi">Nominal:</label>
+                        <input type="text" id="nominalTransaksi" name="nominalTransaksi" placeholder="Contoh: 500.000,75" required onkeyup="formatRupiah(this)">
+                    </div>
+                    <div class="input-group">
+                        <label for="uraianTransaksi">Uraian:</label>
+                        <textarea id="uraianTransaksi" name="uraianTransaksi" rows="3" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="noJurnalTransaksi">No. Jurnal:</label>
+                        <input type="text" id="noJurnalTransaksi" name="noJurnalTransaksi" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
+                    <p id="transaksiMessage" class="info-message"></p>
+                </form>
+            </section>
+
+            <section id="laporan-section" class="hidden-section">
+                <h2>Laporan Keuangan</h2>
+
+                <div class="report-filters">
+                    <div class="input-group">
+                        <label for="filterBulan">Filter Bulan:</label>
+                        <select id="filterBulan">
+                            <option value="">Semua Bulan</option>
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="filterTahun">Filter Tahun:</label>
+                        <input type="number" id="filterTahun" min="2000" max="2100" value="2025">
+                    </div>
+                    <button id="btnTampilkanLaporan" class="btn btn-secondary">Tampilkan Laporan</button>
+                </div>
+
+                <div class="laporan-tabel">
+                    <h3>Rincian Transaksi</h3>
+                    <table id="laporanTable">
+                        <thead>
+                            <tr>
+                                <th>No. Jurnal</th>
+                                <th>Tanggal</th>
+                                <th>Uraian</th>
+                                <th>Jenis</th>
+                                <th>Nominal</th>
+                                <th>Saldo Berjalan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+                <div class="report-actions">
+                    <button id="unduhExcel" class="btn btn-success">Unduh Excel</button>
+                    <button id="unduhPDF" class="btn btn-info">Unduh PDF</button>
+                    <button id="unduhWord" class="btn btn-warning">Unduh Word</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/main.js"></script> <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+    </body>
+</html>
+

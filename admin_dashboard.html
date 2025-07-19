@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Buku Kas Bendahara Kab. Donggala</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard Admin</h1>
+            <div class="header-actions">
+                <button id="btnLogout" class="btn btn-danger">Logout</button>
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" class="active" data-section="dashboard-admin">Ringkasan Global</a></li>
+                <li><a href="#" data-section="user-management">Manajemen User</a></li>
+                <li><a href="#" data-section="all-skpd-report">Laporan Semua SKPD</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="dashboard-admin-section" class="active-section">
+                <h2>Ringkasan Keuangan Global Kabupaten Donggala</h2>
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Total Saldo Awal (Keseluruhan)</h3>
+                        <p id="totalGlobalSaldoAwal" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Pendapatan (Keseluruhan)</h3>
+                        <p id="totalGlobalPendapatan" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Pengeluaran (Keseluruhan)</h3>
+                        <p id="totalGlobalPengeluaran" class="saldo">Rp 0,00</p>
+                    </div>
+                    <div class="card current-balance">
+                        <h3>Total Sisa Saldo (Keseluruhan)</h3>
+                        <p id="totalGlobalSisaSaldo" class="saldo">Rp 0,00</p>
+                    </div>
+                </div>
+
+                <h3>Ringkasan Per SKPD</h3>
+                <table id="skpdSummaryTable">
+                    <thead>
+                        <tr>
+                            <th>Nama SKPD</th>
+                            <th>Saldo Awal</th>
+                            <th>Pendapatan</th>
+                            <th>Pengeluaran</th>
+                            <th>Sisa Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </section>
+
+            <section id="user-management-section" class="hidden-section">
+                <h2>Manajemen User</h2>
+                <button id="btnAddUser" class="btn btn-primary" onclick="window.location.href='register_user.html'">Tambah User Baru</button>
+
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>SKPD Terkait</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </section>
+
+            <section id="all-skpd-report-section" class="hidden-section">
+                <h2>Laporan Semua SKPD</h2>
+
+                <div class="report-filters">
+                    <div class="input-group">
+                        <label for="filterSkpdAdmin">Pilih SKPD:</label>
+                        <select id="filterSkpdAdmin">
+                            <option value="all">Semua SKPD</option>
+                            </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="filterUnitAdmin" style="display:none;">Pilih Unit:</label>
+                        <select id="filterUnitAdmin" style="display:none;">
+                            <option value="all">Semua Unit</option>
+                            </select>
+                    </div>
+                     <div class="input-group">
+                        <label for="filterBulanAdmin">Filter Bulan:</label>
+                        <select id="filterBulanAdmin">
+                            <option value="">Semua Bulan</option>
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="filterTahunAdmin">Filter Tahun:</label>
+                        <input type="number" id="filterTahunAdmin" min="2000" max="2100" value="2025">
+                    </div>
+                    <button id="btnTampilkanLaporanAdmin" class="btn btn-secondary">Tampilkan Laporan</button>
+                </div>
+
+                <div class="laporan-tabel">
+                    <h3>Rincian Transaksi SKPD</h3>
+                    <table id="adminLaporanTable">
+                        <thead>
+                            <tr>
+                                <th>No. Jurnal</th>
+                                <th>Tanggal</th>
+                                <th>SKPD/Unit</th>
+                                <th>Uraian</th>
+                                <th>Jenis</th>
+                                <th>Nominal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+                <div class="report-actions">
+                    <button id="unduhExcelAdmin" class="btn btn-success">Unduh Excel</button>
+                    <button id="unduhPDFAdmin" class="btn btn-info">Unduh PDF</button>
+                    <button id="unduhWordAdmin" class="btn btn-warning">Unduh Word</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script> <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+</body>
+</html>
